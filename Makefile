@@ -13,7 +13,7 @@ rollback:
 	kamimai --driver=mysql --dsn="mysql://$$MYSQL_USERNAME:$$MYSQL_PASSWORD@($$MYSQL_HOST:$$MYSQL_PORT)/$$MYSQL_DATABASE" --directory=./migrations down
 
 build:
-	go build
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build
 
 start:
 	export $$(cat .env | grep -v ^\# | xargs) && \
