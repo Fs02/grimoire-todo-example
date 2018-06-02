@@ -2,6 +2,8 @@
 
 Golang Todo API example using Grimoire and Chi.
 
+Demo: https://www.todobackend.com/client/index.html?https://grimoire-todo-example.herokuapp.com/
+
 Running:
 
 ```sh
