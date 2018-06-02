@@ -21,6 +21,8 @@ func dsn() string {
 }
 
 func main() {
+	port := os.Getenv("PORT")
+
 	// initialize mysql adapter.
 	adapter, err := mysql.Open(dsn())
 	if err != nil {
@@ -52,5 +54,5 @@ func main() {
 	r.With(resource.Load).Delete("/{ID}", resource.Delete)
 	r.Delete("/", resource.Clear)
 
-	http.ListenAndServe(":3000", r)
+	http.ListenAndServe(":"+port, r)
 }
