@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 
 	"github.com/Fs02/grimoire/changeset"
 )
@@ -31,7 +32,7 @@ func (todo Todo) MarshalJSON() ([]byte, error) {
 		Title:     todo.Title,
 		Order:     todo.Order,
 		Completed: todo.Completed,
-		URL:       fmt.Sprint("http://localhost:3000/", todo.ID),
+		URL:       fmt.Sprint(os.Getenv("URL"), todo.ID),
 	})
 }
 
