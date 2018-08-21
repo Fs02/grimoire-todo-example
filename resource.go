@@ -4,12 +4,14 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"strconv"
 
 	"github.com/Fs02/grimoire"
 	"github.com/Fs02/grimoire/c"
 	"github.com/Fs02/grimoire/errors"
+	"github.com/Fs02/grimoire/params"
 	"github.com/go-chi/chi"
 )
 
@@ -32,7 +34,7 @@ func (resource Resource) Index(w http.ResponseWriter, r *http.Request) {
 }
 
 func (resource Resource) Create(w http.ResponseWriter, r *http.Request) {
-	params := r.Context().Value(bodyKey).(map[string]interface{})
+	params := r.Context().Value(bodyKey).(params.Params)
 
 	ch := CreateTodo(params)
 	if ch.Error() != nil {
@@ -62,7 +64,7 @@ func (resource Resource) Show(w http.ResponseWriter, r *http.Request) {
 
 func (resource Resource) Update(w http.ResponseWriter, r *http.Request) {
 	todo := r.Context().Value(loadKey).(Todo)
-	params := r.Context().Value(bodyKey).(map[string]interface{})
+	params := r.Context().Value(bodyKey).(params.Params)
 
 	ch := ChangeTodo(todo, params)
 	if ch.Error() != nil {
@@ -97,17 +99,10 @@ func (resource Resource) Clear(w http.ResponseWriter, r *http.Request) {
 
 func (resource Resource) BodyParser(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		var body map[string]interface{}
+		b, _ := ioutil.ReadAll(r.Body)
+		defer r.Body.Close()
 
-		decoder := json.NewDecoder(r.Body)
-		err := decoder.Decode(&body)
-
-		if err != nil {
-			resource.send(w, nil, 400)
-			return
-		}
-
-		ctx := context.WithValue(r.Context(), bodyKey, body)
+		ctx := context.WithValue(r.Context(), bodyKey, params.ParseJSON(string(b)))
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

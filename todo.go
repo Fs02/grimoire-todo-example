@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/Fs02/grimoire/changeset"
+	"github.com/Fs02/grimoire/params"
 )
 
 // TodoTable definse table name for stroing todos in database.
@@ -37,7 +38,7 @@ func (todo Todo) MarshalJSON() ([]byte, error) {
 }
 
 // ChangeTodo prepares data before database operation.
-func ChangeTodo(todo interface{}, params map[string]interface{}) *changeset.Changeset {
+func ChangeTodo(todo interface{}, params params.Params) *changeset.Changeset {
 	ch := changeset.Cast(todo, params, []string{"title", "order", "completed"})
 	changeset.ValidateRequired(ch, []string{"title"})
 	changeset.ValidateRange(ch, "title", 1, 255)
@@ -46,7 +47,7 @@ func ChangeTodo(todo interface{}, params map[string]interface{}) *changeset.Chan
 }
 
 // CreateTodo is similar to ChangeTodo, except it also fills some default values and used before insert operation.
-func CreateTodo(params map[string]interface{}) *changeset.Changeset {
+func CreateTodo(params params.Params) *changeset.Changeset {
 	ch := ChangeTodo(Todo{}, params)
 	changeset.PutChange(ch, "completed", false)
 
