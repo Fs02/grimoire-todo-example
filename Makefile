@@ -1,7 +1,6 @@
 all: build start
 
 dep:
-	dep ensure
 	go get github.com/Fs02/kamimai
 
 migrate:

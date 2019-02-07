@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 
@@ -54,5 +55,5 @@ func main() {
 	r.With(resource.Load).Delete("/{ID}", resource.Delete)
 	r.Delete("/", resource.Clear)
 
-	http.ListenAndServe(":"+port, r)
+	log.Fatal(http.ListenAndServe(":"+port, r))
 }
